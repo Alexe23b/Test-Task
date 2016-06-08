@@ -10,7 +10,6 @@ public class task_1 {
         long amount = in.nextInt();
 
         long rez = factorial(2*amount)/(factorial(amount)*factorial(amount+1));
-        //long rez = factorial(amount);
 
         System.out.println("Amount of pairs of brackets " + amount + ";");
 
