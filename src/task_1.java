@@ -12,16 +12,14 @@ public class task_1 {
         double rez = factorial(2 * amount) / (factorial(amount) * factorial(amount + 1));
         long result = Math.round(rez);
 
-        System.out.println("Amount of pairs of brackets " + amount + ";");
+        System.out.println("Amount of pairs of brackets " + (long)amount + ";");
 
         System.out.println("Amount of the Regular Bracket sequences " + result + ";");
     }
 
     public static double factorial(double n) {
-        double a = 1;
-        for (double i = 1; i <= n; i = i + 1) {
-            a = a * i;
-        }
-        return a;
+        double res = 1;
+        for (double i = 2; i <= n; i = i + 1) res *= i;
+        return res;
     }
 }
