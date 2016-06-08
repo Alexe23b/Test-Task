@@ -7,17 +7,19 @@ public class task_1 {
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         System.out.println("Input the amount of pairs of brackets");
-        long amount = in.nextInt();
+        double amount = in.nextInt();
 
-        long rez = factorial(2*amount)/(factorial(amount)*factorial(amount+1));
+        double rez = factorial(2 * amount) / (factorial(amount) * factorial(amount + 1));
+        long result = Math.round(rez);
 
         System.out.println("Amount of pairs of brackets " + amount + ";");
 
-        System.out.println("Amount of the Regular Bracket sequences " + rez + ";");
+        System.out.println("Amount of the Regular Bracket sequences " + result + ";");
     }
-    public static long factorial(long n) {
-        long a = 1;
-        for (long i = 1; i <= n; i = i + 1) {
+
+    public static double factorial(double n) {
+        double a = 1;
+        for (double i = 1; i <= n; i = i + 1) {
             a = a * i;
         }
         return a;
