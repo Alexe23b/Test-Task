@@ -1,188 +1,200 @@
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.*;
 
 public class task_2 {
 
 
     private static int INF = 200000;
-    private int s; //number of test
+    private static Scanner in;
     private int n; //amount of cities
     private ArrayList<Integer> city[]; //список смежности
     private ArrayList<Integer> cost[]; //вес ребра в орграфе
-    private String[] startCity;
-    private String[] goalCity;
-    private Integer[] numStartCity;
-    private Integer[] numGoalCity;
     private Map<String, Integer> mapCity = new HashMap<>();
     private boolean used[]; //массив для хранения информации о пройденных и не пройденных вершинах
-    private int dist[]; //массив для хранения расстояния от стартовой вершины
-    //массив предков, необходимых для восстановления кратчайшего пути из стартовой вершины
-    private int pred[];
-    private int start; //стартовая вершина, от которой ищется расстояние до всех других
+    private int price[]; //массив для хранения расстояния от стартовой вершины
+    private int result;
 
-    private BufferedReader cin;
-    private PrintWriter cout;
-    private StringTokenizer tokenizer;
 
     //процедура запуска алгоритма Дейкстры из стартовой вершины
-    private void dejkstra(int city) {
-        dist[city] = 0; //кратчайшее расстояние до стартовой вершины равно 0
-        for (int iter = 0; iter < n; ++iter) {
+    private void dijkstra(int start, int stop) {
+        price[start] = 0; //кратчайшее расстояние до стартовой вершины равно 0
+        for (int i = 0; i < n; ++i) {
             int v = -1;
-            int distV = INF;
+            int priceV = INF;
             //выбираем вершину, кратчайшее расстояние до которого еще не найдено
-            for (int i = 0; i < n; ++i) {
-                if (used[i]) {
+            for (int j = 0; j < n; ++j) {
+                if (used[j]) {
                     continue;
                 }
-                if (distV < dist[i]) {
+                if (priceV < price[j]) {
                     continue;
                 }
-                v = i;
-                distV = dist[i];
+                v = j;
+                priceV = price[j];
             }
+//            if (v == stop) {
+//                result = priceV;
+//                break;
+//            }
             //рассматриваем все дуги, исходящие из найденной вершины
-            for (int i = 0; i < this.city[v].size(); ++i) {
-                int u = this.city[v].get(i);
-                int weightU = cost[v].get(i);
+            for (int k = 0; k < this.city[v].size(); ++k) {
+                int u = this.city[v].get(k);
+                int costU = cost[v].get(k);
                 //релаксация вершины
-                if (dist[v] + weightU < dist[u]) {
-                    dist[u] = dist[v] + weightU;
-                    pred[u] = v;
+                if (price[v] + costU < price[u]) {
+                    price[u] = price[v] + costU;
+
+//                    pred[u] = v;
+                }
+                if (u == stop) {
+                    result = price[u];
                 }
             }
+
             //помечаем вершину v просмотренной, до нее найдено кратчайшее расстояние
             used[v] = true;
         }
+        System.out.println(result);
     }
 
-    //процедура считывания входных данных с консоли
-    private void readData() throws IOException {
-//        cin = new BufferedReader(new InputStreamReader(System.in));
-//        cout = new PrintWriter(System.out);
-//        tokenizer = new StringTokenizer(cin.readLine());
-
-        Scanner in = new Scanner(System.in);
-        System.out.println("Input the number of test");
-        s = in.nextInt();
+    private void readData() throws IOException {    // the reading data from console
 
         in = new Scanner(System.in);
-        System.out.println("Input the number of cities");
+        System.out.println("Input the number of cities for test");
         n = in.nextInt();
+//        n = 4;
 
-        city = new ArrayList[n];
+        city = new ArrayList[n];    // creating array (of ArrayList) of cities for keeping neighbors
         for (int i = 0; i < n; ++i) {
             city[i] = new ArrayList<>();
         }
-        cost = new ArrayList[n];
+        cost = new ArrayList[n];    // creating array (of ArrayList) for keeping fares for each neighbor
         for (int i = 0; i < n; ++i) {
             cost[i] = new ArrayList<>();
         }
-        for (int i = 0; i < n; ++i) {
+
+        used = new boolean[n];      // array of labels for visited cities
+        Arrays.fill(used, false);
+
+        price = new int[n];         // storage array for prices
+        Arrays.fill(price, INF);
+
+
+        for (int i = 0; i < n; ++i) {    // model input
             in = new Scanner(System.in);
-            System.out.println("Input name of City # " + i + 1);
+            System.out.println("Input name of City # " + (i + 1));
             String nameCity = in.nextLine();
 
-            mapCity.put(nameCity, i);
+            mapCity.put(nameCity, i);    // map for keeping name and numbers of cities
 
             in = new Scanner(System.in);
             System.out.println("Input the number of neighbours ");
             int m = in.nextInt();
-            for (int j = 0; i < m; ++j) {
+            for (int j = 0; j < m; ++j) {
                 in = new Scanner(System.in);
-                System.out.println("Input the neighbour # " + j + 1);
-                city[i].add(in.nextInt());
+                System.out.println("Input the # of neighbour " + (j + 1));
+                city[i].add(in.nextInt() - 1);
                 in = new Scanner(System.in);
-                System.out.println("Input the cost of travel to the neighboring city #" + j + 1);
+                System.out.println("Input the cost of travel to the neighboring city #" + (j + 1));
                 cost[i].add(in.nextInt());
             }
         }
-        in = new Scanner(System.in);
-        System.out.println("Input [the number of paths to find ");
+
+//        mapCity.put("gda", 0);
+//        mapCity.put("byd", 1);
+//        mapCity.put("tor", 2);
+//        mapCity.put("war", 3);
+//
+//        city[0].add(1);
+//        cost[0].add(1);
+//        city[0].add(2);
+//        cost[0].add(3);
+//
+//        city[1].add(0);
+//        cost[1].add(1);
+//        city[1].add(2);
+//        cost[1].add(1);
+//        city[1].add(3);
+//        cost[1].add(4);
+//
+//        city[2].add(0);
+//        cost[2].add(3);
+//        city[2].add(1);
+//        cost[2].add(1);
+//        city[2].add(3);
+//        cost[2].add(1);
+//
+//        city[3].add(1);
+//        cost[3].add(4);
+//        city[3].add(2);
+//        cost[3].add(1);
+    }
+
+    private void readPath() throws IOException {
+        in = new Scanner(System.in);   //input the numbers of paths to find
+        System.out.println("Input the numbers of paths to find ");
         int paths = in.nextInt();
-        for (int k = 0; k < paths; ++k) {
+//        int paths = 1;
+
+        String[] startCity;
+        startCity = new String[paths];
+        String[] destinationCity;
+        destinationCity = new String[paths];
+
+        Integer[] numStartCity;
+        numStartCity = new Integer[paths];
+        Integer[] numDestinationCity;
+        numDestinationCity = new Integer[paths];
+
+        for (int i = 0; i < paths; ++i) {
             in = new Scanner(System.in);
-            System.out.println("Input [the number of paths to find ");
+            System.out.println("Input paths to find (Start_City Destination_City)");
             String path = in.nextLine();
             int q = path.indexOf(" ");
 
-            startCity[k] = path.substring(0, q);
-            goalCity[k] = path.substring(q + 1);
+            startCity[i] = path.substring(0, q);
+            destinationCity[i] = path.substring(q + 1);
 
-            numStartCity[k] = mapCity.get(startCity[k]);
-            numGoalCity[k] = mapCity.get(goalCity[k]);
+            String s = startCity[i];
+            String d = destinationCity[i];
+
+            numStartCity[i] = mapCity.get(s);
+            numDestinationCity[i] = mapCity.get(d);
+
+
         }
-
-
-//        start = Integer.parseInt(tokenizer.nextToken()) - 1;
-
-
-        used = new boolean[n];
-        Arrays.fill(used, false);
-
-        pred = new int[n];
-        Arrays.fill(pred, -1);
-
-        dist = new int[n];
-        Arrays.fill(dist, INF);
-
+        for (int j = 0; j < paths; ++j) {
+            dijkstra(numStartCity[j], numDestinationCity[j]);
+        }
     }
 
-    //процедура восстановления кратчайшего пути по массиву предком
-    void printWay(int v) {
-        if (v == -1) {
-            return;
-        }
-        printWay(pred[v]);
-        cout.print((v + 1) + " ");
-    }
-
-    //процедура вывода данных в консоль
-    private void printData() throws IOException {
-        for (int v = 0; v < n; ++v) {
-            if (dist[v] != INF) {
-                cout.print(dist[v] + " ");
-            } else {
-                cout.print("-1 ");
-            }
-        }
-        cout.println();
-        for (int v = 0; v < n; ++v) {
-            cout.print((v + 1) + ": ");
-            if (dist[v] != INF) {
-                printWay(v);
-            }
-            cout.println();
-        }
-
-        cin.close();
-        cout.close();
-    }
-
-    private void run() throws IOException {
-        readData();
-        dejkstra(start);
-        printData();
-
-        cin.close();
-        cout.close();
-    }
 
     public static void main(String[] args) throws IOException {
+
         task_2 solution = new task_2();
-        solution.run();
+
+        int s; //number of test
+        in = new Scanner(System.in);
+        System.out.println("Input the number of test");
+        s = in.nextInt();
+//        s = 1;
+        for (int count = 1; count <= s; ++count) {
+
+            solution.readData();
+            solution.readPath();
+            System.out.println();
+        }
     }
+
     public String name;
 
-    public int hashCode(){
+    public int hashCode() {
         return name.hashCode();
     }
 
-    public boolean equals(Object o){
-        if(o instanceof task_2){
-            return name.equals( ((task_2)o).name );
+    public boolean equals(Object o) {
+        if (o instanceof task_2) {
+            return name.equals(((task_2) o).name);
         }
         return false;
     }
