@@ -32,10 +32,7 @@ public class task_2 {
                 v = j;
                 priceV = price[j];
             }
-//            if (v == stop) {
-//                result = priceV;
-//                break;
-//            }
+
             //рассматриваем все дуги, исходящие из найденной вершины
             for (int k = 0; k < this.city[v].size(); ++k) {
                 int u = this.city[v].get(k);
@@ -43,8 +40,6 @@ public class task_2 {
                 //релаксация вершины
                 if (price[v] + costU < price[u]) {
                     price[u] = price[v] + costU;
-
-//                    pred[u] = v;
                 }
                 if (u == stop) {
                     result = price[u];
@@ -55,6 +50,7 @@ public class task_2 {
             used[v] = true;
         }
         System.out.println(result);
+        System.out.println();
     }
 
     private void readData() throws IOException {    // the reading data from console
@@ -72,13 +68,6 @@ public class task_2 {
         for (int i = 0; i < n; ++i) {
             cost[i] = new ArrayList<>();
         }
-
-        used = new boolean[n];      // array of labels for visited cities
-        Arrays.fill(used, false);
-
-        price = new int[n];         // storage array for prices
-        Arrays.fill(price, INF);
-
 
         for (int i = 0; i < n; ++i) {    // model input
             in = new Scanner(System.in);
@@ -164,6 +153,12 @@ public class task_2 {
 
         }
         for (int j = 0; j < paths; ++j) {
+            used = new boolean[n];      // array of labels for visited cities
+            Arrays.fill(used, false);
+
+            price = new int[n];         // storage array for prices
+            Arrays.fill(price, INF);
+
             dijkstra(numStartCity[j], numDestinationCity[j]);
         }
     }
@@ -182,7 +177,6 @@ public class task_2 {
 
             solution.readData();
             solution.readPath();
-            System.out.println();
         }
     }
 
