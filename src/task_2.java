@@ -7,22 +7,20 @@ public class task_2 {
     private static int INF = 200000;
     private static Scanner in;
     private int n; //amount of cities
-    private ArrayList<Integer> city[]; //список смежности
-    private ArrayList<Integer> cost[]; //вес ребра в орграфе
+    private ArrayList<Integer> city[];
+    private ArrayList<Integer> cost[];
     private Map<String, Integer> mapCity = new HashMap<>();
-    private boolean used[]; //массив для хранения информации о пройденных и не пройденных вершинах
-    private int price[]; //массив для хранения расстояния от стартовой вершины
+    private boolean used[];
+    private int price[];
     private int result;
 
 
-    //процедура запуска алгоритма Дейкстры из стартовой вершины
-    private void dijkstra(int start, int stop) {
-        price[start] = 0; //кратчайшее расстояние до стартовой вершины равно 0
+    private void dijkstra(int start, int stop) {   // Dijkstra's algorithm
+        price[start] = 0; // set the distance to the start city
         for (int i = 0; i < n; ++i) {
             int v = -1;
             int priceV = INF;
-            //выбираем вершину, кратчайшее расстояние до которого еще не найдено
-            for (int j = 0; j < n; ++j) {
+            for (int j = 0; j < n; ++j) {   // search the city with an uncertain distance
                 if (used[j]) {
                     continue;
                 }
@@ -33,24 +31,21 @@ public class task_2 {
                 priceV = price[j];
             }
 
-            //рассматриваем все дуги, исходящие из найденной вершины
-            for (int k = 0; k < this.city[v].size(); ++k) {
+            for (int k = 0; k < this.city[v].size(); ++k) {   // Compare prices for cities - neighbors
                 int u = this.city[v].get(k);
                 int costU = cost[v].get(k);
-                //релаксация вершины
+
                 if (price[v] + costU < price[u]) {
                     price[u] = price[v] + costU;
                 }
-                if (u == stop) {
+                if (u == stop) {   //  stop if the city is a destination
                     result = price[u];
                 }
             }
-
-            //помечаем вершину v просмотренной, до нее найдено кратчайшее расстояние
-            used[v] = true;
+            used[v] = true;   // mark the city if distance was found
         }
-        System.out.println(result);
         System.out.println();
+        System.out.println(result);   // output the result to screen
     }
 
     private void readData() throws IOException {    // the reading data from console
@@ -120,7 +115,7 @@ public class task_2 {
     }
 
     private void readPath() throws IOException {
-        in = new Scanner(System.in);   //input the numbers of paths to find
+        in = new Scanner(System.in);   // input the numbers of paths to find
         System.out.println("Input the numbers of paths to find ");
         int paths = in.nextInt();
 //        int paths = 1;
@@ -135,19 +130,19 @@ public class task_2 {
         Integer[] numDestinationCity;
         numDestinationCity = new Integer[paths];
 
-        for (int i = 0; i < paths; ++i) {
+        for (int i = 0; i < paths; ++i) {   // the input of routes
             in = new Scanner(System.in);
             System.out.println("Input paths to find (Start_City Destination_City)");
             String path = in.nextLine();
             int q = path.indexOf(" ");
 
-            startCity[i] = path.substring(0, q);
-            destinationCity[i] = path.substring(q + 1);
+            startCity[i] = path.substring(0, q);   // read the starting city from the string path
+            destinationCity[i] = path.substring(q + 1);   // ead the destination city from the string path
 
             String s = startCity[i];
             String d = destinationCity[i];
 
-            numStartCity[i] = mapCity.get(s);
+            numStartCity[i] = mapCity.get(s);   // searching numbers of the city by the name
             numDestinationCity[i] = mapCity.get(d);
 
 
@@ -159,7 +154,7 @@ public class task_2 {
             price = new int[n];         // storage array for prices
             Arrays.fill(price, INF);
 
-            dijkstra(numStartCity[j], numDestinationCity[j]);
+            dijkstra(numStartCity[j], numDestinationCity[j]);   // method call pricing
         }
     }
 
@@ -180,16 +175,35 @@ public class task_2 {
         }
     }
 
-    public String name;
+    // redefinition of the methods equals and hashCode
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-    public int hashCode() {
-        return name.hashCode();
+        task_2 task_2 = (task_2) o;
+
+        if (n != task_2.n) return false;
+        if (result != task_2.result) return false;
+        // Probably incorrect - comparing Object[] arrays with Arrays.equals
+        if (!Arrays.equals(city, task_2.city)) return false;
+        // Probably incorrect - comparing Object[] arrays with Arrays.equals
+        if (!Arrays.equals(cost, task_2.cost)) return false;
+        if (mapCity != null ? !mapCity.equals(task_2.mapCity) : task_2.mapCity != null) return false;
+        if (!Arrays.equals(used, task_2.used)) return false;
+        return Arrays.equals(price, task_2.price);
+
     }
 
-    public boolean equals(Object o) {
-        if (o instanceof task_2) {
-            return name.equals(((task_2) o).name);
-        }
-        return false;
+    @Override
+    public int hashCode() {
+        int result1 = n;
+        result1 = 31 * result1 + Arrays.hashCode(city);
+        result1 = 31 * result1 + Arrays.hashCode(cost);
+        result1 = 31 * result1 + (mapCity != null ? mapCity.hashCode() : 0);
+        result1 = 31 * result1 + Arrays.hashCode(used);
+        result1 = 31 * result1 + Arrays.hashCode(price);
+        result1 = 31 * result1 + result;
+        return result1;
     }
 }
